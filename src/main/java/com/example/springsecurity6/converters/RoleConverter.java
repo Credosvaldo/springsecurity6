@@ -1,7 +1,6 @@
 package com.example.springsecurity6.converters;
 
 import com.example.springsecurity6.enuns.Role;
-
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 
@@ -23,5 +22,4 @@ public class RoleConverter implements AttributeConverter<Role, Integer> {
     }
     return Role.fromValue(dbData);
   }
-
 }
