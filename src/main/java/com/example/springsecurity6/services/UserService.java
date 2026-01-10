@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import com.example.springsecurity6.dtos.users.UserDto;
 import com.example.springsecurity6.mappers.UserMapper;
-import com.example.springsecurity6.models.Users;
 import com.example.springsecurity6.repositories.UserRepository;
 
 @Service
@@ -16,12 +15,11 @@ public class UserService {
   @Autowired
   private UserRepository userRepository;
 
-  public Users getCurrentUser() {
-    return new Users();
-  }
+  @Autowired
+  private AuthService authService;
 
   public UserDto getMe() {
-    var currentUser = getCurrentUser();
+    var currentUser = authService.getCurrentUser();
     var userDto = UserMapper.toDto(currentUser);
     return userDto;
   }

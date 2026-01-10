@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.springsecurity6.dtos.auth.LoginRequest;
 import com.example.springsecurity6.dtos.auth.LoginResponse;
 import com.example.springsecurity6.dtos.auth.RegisterRequest;
-import com.example.springsecurity6.dtos.auth.RegisterResponse;
 import com.example.springsecurity6.services.AuthService;
 
 @RestController

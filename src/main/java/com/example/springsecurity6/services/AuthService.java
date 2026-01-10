@@ -1,23 +1,25 @@
 package com.example.springsecurity6.services;
 
-import com.example.springsecurity6.dtos.auth.LoginRequest;
-import com.example.springsecurity6.dtos.auth.LoginResponse;
-import com.example.springsecurity6.dtos.auth.RegisterRequest;
-import com.example.springsecurity6.dtos.auth.RegisterResponse;
-import com.example.springsecurity6.enuns.Role;
-import com.example.springsecurity6.models.Users;
-import com.example.springsecurity6.repositories.UserRepository;
 import java.time.Instant;
 import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.example.springsecurity6.dtos.auth.LoginRequest;
+import com.example.springsecurity6.dtos.auth.LoginResponse;
+import com.example.springsecurity6.dtos.auth.RegisterRequest;
+import com.example.springsecurity6.enuns.Role;
+import com.example.springsecurity6.models.Users;
+import com.example.springsecurity6.repositories.UserRepository;
 
 @Service
 public class AuthService {
@@ -91,6 +93,19 @@ public class AuthService {
     var loginResponse = login(loginRequest);
 
     return loginResponse;
+  }
+
+  public Users getCurrentUser() {
+    var authentication = SecurityContextHolder.getContext().getAuthentication();
+
+    if(authentication == null || !authentication.isAuthenticated()) {
+      throw new IllegalStateException("No authenticated user found");
+    }
+
+    var username = authentication.getName();
+    var user = userRepository.findByUsername(username);
+
+    return user;
   }
 
   private boolean isLoginCorrect(String rawPassword, String encodedPassword) {
