@@ -1,8 +1,11 @@
 package com.example.springsecurity6.config;
 
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,10 +21,6 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.RSAKey;
-import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
-
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -32,6 +31,9 @@ public class SecurityConfig {
 
   @Value("${jwt.private.key}")
   private RSAPrivateKey privateKey;
+
+  @Autowired
+  private OAuth2SuccessHandler oAuth2SuccessHandler;
 
   @Bean
   SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity)
@@ -52,6 +54,7 @@ public class SecurityConfig {
       )
       .csrf(csrf -> csrf.disable())
       .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
+      .oauth2Login(oauth2 -> oauth2.successHandler(oAuth2SuccessHandler))
       .sessionManagement(session ->
         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
       );
